@@ -1,6 +1,8 @@
 import React from 'react'
-import {connect} from '../store'
+import { connect } from '../store'
 import { setAuthStatus, appReset } from '../actions'
+
+import styles from './Admin.module.css'
 
 const Admin = ({ app, dispatch }) => {
 
@@ -14,6 +16,13 @@ const Admin = ({ app, dispatch }) => {
       <p>
         Hi { app.name }
       </p>
+
+      { app.showSpamMessage && (
+        <p className={ styles.blink }>
+          !!!You won $1000000!!!
+        </p>
+      )}
+
       <p>
         <button onClick={ handleLogout }>
           Log out

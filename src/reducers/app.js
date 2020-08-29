@@ -1,8 +1,9 @@
 import { createReducer } from '../store'
-import { appReset, setAppName } from '../actions'
+import { appReset, setAppName, setAppSpamMessageVisibility } from '../actions'
 
 const initialState = {
-  name: ''
+  name: '',
+  showSpamMessage: false
 };
 
 
@@ -14,6 +15,12 @@ export const appReducer = createReducer( initialState, ( state, action ) => {
       return {
         ...state,
         name: action.payload
+      };
+
+    case setAppSpamMessageVisibility.getType():
+      return {
+        ...state,
+        showSpamMessage: action.payload
       };
 
     case appReset.getType():

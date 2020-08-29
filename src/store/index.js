@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const Context = React.createContext(null)
-
-const useCreateStore = data => {
+const compose = (...funcs) => func => funcs.reduceRight((composed, f) => f(composed), func )
+const useCreateStore = (data, middlewares) => {
 
   const getInitialState = () => {
     const state = {}
@@ -33,7 +33,24 @@ const useCreateStore = data => {
   const reducer = React.useMemo(() => getReducers(), [])
   const initialState = React.useMemo(() => getInitialState(), [])
 
-  return React.useReducer(reducer, initialState)
+  const [state, dispatch] = React.useReducer(reducer, initialState)
+
+  if ( Array.isArray(middlewares) ) {
+
+    const middlewaresAPI = {
+      getState: () => state,
+      dispatch: action => dispatch(action)
+    }
+
+    const chain = middlewares.map( middleware => middleware(middlewaresAPI) )
+    const enhancedDispatch = compose(...chain)(dispatch)
+
+    return [ state, enhancedDispatch ]
+
+  }
+
+  return [ state, dispatch ]
+
 }
 
 const RenderComponent = React.memo( props => {
